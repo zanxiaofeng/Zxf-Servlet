@@ -14,7 +14,7 @@ public class MyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Boolean hasSession = request.getSession(false) != null;
         Long time = hasSession ? (Long)request.getSession(false).getAttribute("time"):0L;
-        System.out.println("MyServlet       ::doGet::Start::Name=" + Thread.currentThread().getName() + "::ID=" + Thread.currentThread().getId() + " HasSession=" + hasSession + ", time=" + time);
+        System.out.println("MyServlet       ::doGet::Start::Name=" + Thread.currentThread().getName() + " HasSession=" + hasSession + ", time=" + time);
         if (!hasSession && "true".equals(request.getParameter("session"))){
             request.getSession(true).setAttribute("time", System.currentTimeMillis());
         }
