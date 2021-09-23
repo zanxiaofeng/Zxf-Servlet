@@ -23,7 +23,7 @@ public class MySessionRepository {
             return null;
         }
 
-        Path fileName = Path.of("./sessions/" + sessionId + ".json");
+        Path fileName = Path.of("./store/" + sessionId + ".json");
         if (Files.exists(fileName)) {
             try {
                 objectMapper.readValue(fileName.toFile(), MySession.class);
@@ -37,7 +37,7 @@ public class MySessionRepository {
 
     public void saveSession(MySession mySession) {
         System.out.println("MySessionRepository       ::AddSessionById::Start::Name=" + Thread.currentThread().getName() + "ID: " + mySession.getId());
-        Path fileName = Path.of("./sessions/" + mySession.getId() + ".json");
+        Path fileName = Path.of("./store/" + mySession.getId() + ".json");
         try {
             objectMapper.writeValue(fileName.toFile(), mySession);
         } catch (IOException e) {
