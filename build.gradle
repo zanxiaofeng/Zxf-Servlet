@@ -17,4 +17,5 @@ gretty {
 dependencies {
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     implementation 'com.google.guava:guava:27.1-jre'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
 }
