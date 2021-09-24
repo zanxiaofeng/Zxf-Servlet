@@ -7,19 +7,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 @WebServlet(name = "myServlet", urlPatterns = "/my-servlet", loadOnStartup = 1)
 public class MyServlet extends HttpServlet {
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Boolean hasSession = request.getSession(false) != null;
-        Long time = hasSession ? (Long)request.getSession(false).getAttribute("time"):0L;
-        System.out.println("MyServlet       ::doGet::Start::Name=" + Thread.currentThread().getName() + " HasSession=" + hasSession + ", time=" + time);
-        if (!hasSession && "true".equals(request.getParameter("session"))){
-            request.getSession(true).setAttribute("time", System.currentTimeMillis());
+        String startTime = hasSession ? (String) request.getSession(false).getAttribute("start-time") : "";
+        System.out.println("MyServlet       ::doGet::Start::Name=" + Thread.currentThread().getName() + " HasSession=" + hasSession + ", start-time=" + startTime);
+
+        if (!hasSession && "true".equals(request.getParameter("session"))) {
+            request.getSession(true).setAttribute("start-time", LocalDateTime.now().toString());
         }
-        try (OutputStream outputStream = response.getOutputStream()){
-           outputStream.write(("Session=" + hasSession + ", time="+ time).getBytes(StandardCharsets.UTF_8));
+        try (OutputStream outputStream = response.getOutputStream()) {
+            outputStream.write(("HasSession=" + hasSession + ", start-time=" + startTime).getBytes(StandardCharsets.UTF_8));
         }
     }
 }

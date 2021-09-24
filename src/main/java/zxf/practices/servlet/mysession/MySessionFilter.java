@@ -1,4 +1,4 @@
-package zxf.practices.servlet.session;
+package zxf.practices.servlet.mysession;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -9,13 +9,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
 
-@WebFilter(filterName = "mySession filter", urlPatterns = "/*")
+@WebFilter(filterName = "mySessionFilter", urlPatterns = "/*")
 public class MySessionFilter implements Filter {
     protected MySessionRepository mySessionRepository = new MySessionRepository();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        System.out.println("MySessionFilter       ::init::Start::Name=" + Thread.currentThread().getName());
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MySessionFilter implements Filter {
 
     @Override
     public void destroy() {
-
+        System.out.println("MySessionFilter       ::destroy::Start::Name=" + Thread.currentThread().getName());
     }
 
     public static class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
@@ -41,7 +41,7 @@ public class MySessionFilter implements Filter {
 
         @Override
         public HttpSession getSession(boolean create) {
-            MySessionRepository.MySession mySession = mySessionRepository.getSession(this.getRequestedSessionId());
+            MySession mySession = mySessionRepository.getSession(this.getRequestedSessionId());
             if (mySession != null) {
                 System.out.println("MyHttpServletRequestWrapper       ::getSession::HasSession::Name=" + Thread.currentThread().getName());
                 return mySession;
@@ -49,7 +49,7 @@ public class MySessionFilter implements Filter {
 
             if (create) {
                 System.out.println("MyHttpServletRequestWrapper       ::getSession::CreateSession::Name=" + Thread.currentThread().getName());
-                MySessionRepository.MySession myNewSession = new MySessionRepository.MySession(UUID.randomUUID().toString(), mySessionRepository);
+                MySession myNewSession = new MySession(UUID.randomUUID().toString(), mySessionRepository);
                 mySessionRepository.saveSession(myNewSession);
                 response.setHeader("My-Session-Id", myNewSession.getId());
                 return myNewSession;
@@ -58,7 +58,6 @@ public class MySessionFilter implements Filter {
             System.out.println("MyHttpServletRequestWrapper       ::GetSession::NoSession::Name=" + Thread.currentThread().getName());
             return null;
         }
-
 
         @Override
         public HttpSession getSession() {
