@@ -24,6 +24,10 @@ public class MySession implements HttpSession {
     @JsonProperty
     private Map<String, Object> values;
 
+    public MySession() {
+
+    }
+
     public MySession(String id, MySessionRepository mySessionRepository) {
         this.mySessionRepository = mySessionRepository;
         this.id = id;

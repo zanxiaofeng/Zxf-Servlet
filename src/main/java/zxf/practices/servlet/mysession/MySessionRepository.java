@@ -10,7 +10,7 @@ public class MySessionRepository {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public MySession getSession(String sessionId) {
-        System.out.println("MySessionRepository       ::getSessionById::Start::Name=" + Thread.currentThread().getName());
+        System.out.println("MySessionRepository       ::getSession::Start::Name=" + Thread.currentThread().getName());
         if (sessionId == null) {
             return null;
         }
@@ -18,7 +18,7 @@ public class MySessionRepository {
         Path sessionFileName = getSessionFileName(sessionId);
         if (Files.exists(sessionFileName)) {
             try {
-                objectMapper.readValue(sessionFileName.toFile(), MySession.class);
+                return objectMapper.readValue(sessionFileName.toFile(), MySession.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -28,7 +28,7 @@ public class MySessionRepository {
     }
 
     public void saveSession(MySession mySession) {
-        System.out.println("MySessionRepository       ::AddSessionById::Start::Name=" + Thread.currentThread().getName() + "ID: " + mySession.getId());
+        System.out.println("MySessionRepository       ::saveSession::Start::Name=" + Thread.currentThread().getName() + ", ID: " + mySession.getId());
         Path sessionFileName = getSessionFileName(mySession.getId());
         try {
             objectMapper.writeValue(sessionFileName.toFile(), mySession);

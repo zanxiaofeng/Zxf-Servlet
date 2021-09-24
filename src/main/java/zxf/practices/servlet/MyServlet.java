@@ -20,7 +20,7 @@ public class MyServlet extends HttpServlet {
             request.getSession(true).setAttribute("start-time", LocalDateTime.now().toString());
         }
         try (OutputStream outputStream = response.getOutputStream()) {
-            outputStream.write(("HasSession=" + hasSession + ", start-time=" + startTime).getBytes(StandardCharsets.UTF_8));
+            outputStream.write(("HasSession=" + hasSession + ", start-time=" + startTime + "\n").getBytes(StandardCharsets.UTF_8));
         }
     }
 }
