@@ -2,6 +2,7 @@ package zxf.practices.servlet.mysession;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -20,7 +21,7 @@ public class MySession implements HttpSession {
     @JsonProperty
     private long lastAccessedTime;
     @JsonProperty
-    private Map<String, Object> attributes;
+    private Map<String, ObjectWrapper> attributes;
     @JsonProperty
     private Map<String, Object> values;
 
@@ -77,7 +78,12 @@ public class MySession implements HttpSession {
 
     @Override
     public Object getAttribute(String name) {
-        return attributes.get(name);
+        ObjectWrapper object = attributes.get(name);
+        if (object == null){
+            return null;
+        }
+
+        return object.getConvertedObject();
     }
 
     @Override
@@ -99,7 +105,7 @@ public class MySession implements HttpSession {
 
     @Override
     public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
+        attributes.put(name, new ObjectWrapper(value));
         mySessionRepository.saveSession(this);
     }
 
@@ -130,5 +136,51 @@ public class MySession implements HttpSession {
     @JsonIgnore
     public boolean isNew() {
         return false;
+    }
+
+    public static class ObjectWrapper {
+        private String type;
+        private Object object;
+
+        public ObjectWrapper() {
+
+        }
+
+        public ObjectWrapper(Object object) {
+            this.type = object.getClass().getTypeName();
+            this.object = object;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public Object getObject() {
+            return object;
+        }
+
+        public void setObject(Object object) {
+            this.object = object;
+        }
+
+        @JsonIgnore
+        public Class getKlass() {
+            try {
+                return Class.forName(type);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return Object.class;
+        }
+
+        @JsonIgnore
+        public Object getConvertedObject() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.convertValue(object, getKlass());
+        }
     }
 }
