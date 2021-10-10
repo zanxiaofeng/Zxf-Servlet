@@ -12,6 +12,7 @@ repositories {
 
 gretty {
     servletContainer = 'tomcat8'
+    enableNaming = true
 }
 
 dependencies {
